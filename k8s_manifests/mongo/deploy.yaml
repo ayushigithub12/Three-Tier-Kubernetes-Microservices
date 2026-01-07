@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: workshop
+  name: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:4.4.6
+        ports:
+        - containerPort: 27017
+
+        readinessProbe:
+          exec:
+            command:
+              - mongo
+              - --eval
+              - "db.runCommand({ ping: 1 })"
+          initialDelaySeconds: 40
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 5
+
+        livenessProbe:
+          exec:
+            command:
+              - mongo
+              - --eval
+              - "db.runCommand({ ping: 1 })"
+          initialDelaySeconds: 40
+          periodSeconds: 10
+
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mongo-sec
+                key: username
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongo-sec
+                key: password
