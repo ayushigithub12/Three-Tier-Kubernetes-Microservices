@@ -1,6 +1,6 @@
-# Cloud Native Todo App
+# Three-Tier-Kubernetes-Microservices
 
-A simple Todo application built to understand containerized and Kubernetes-based deployments.
+A simple  application built to understand containerized and Kubernetes-based deployments.
 
 ## Tech Stack
 - React (Frontend)
